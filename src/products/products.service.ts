@@ -13,6 +13,7 @@ export class ProductsService {
     @InjectRepository(Product)
     private  productRepository: Repository<Product>
   ) {}
+  
   private products: CreateProductDto[] = []
 
   create(createProductDto: CreateProductDto) {
