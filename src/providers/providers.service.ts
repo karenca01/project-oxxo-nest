@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { UpdateProviderDto } from './dto/update-provider.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { Not, Repository, Like } from 'typeorm';
 import { Provider } from './entities/provider.entity';
 
 @Injectable()
@@ -22,6 +22,15 @@ export class ProvidersService {
 
   findOne(id: string) {
     return this.providerRepository.findOneBy({providerId: id});
+  }
+
+  findByName(name: string) {
+    const provider = this.providerRepository.findOneBy({
+      providerName: Like(`%${name}%`)
+    });
+
+    if(!provider) throw new NotFoundException();
+    return provider;
   }
 
   async update(id: string, updateProviderDto: UpdateProviderDto) {
