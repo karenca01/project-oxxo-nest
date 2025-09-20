@@ -37,6 +37,7 @@ export class LocationsService {
 
     if(!locationToUpdate) throw new NotFoundException();
     this.locationRepository.save(locationToUpdate);
+    
     return locationToUpdate;
   }
 

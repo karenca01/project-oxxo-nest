@@ -4,10 +4,13 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 export class Location {
     @PrimaryGeneratedColumn('increment')
     locationId: number;
+
     @Column('text')
     locationName: string;
+
     @Column('text')
     locationAddress: string;
-    @Column('array')
+
+    @Column("float", { array: true })
     locationLatLng: number[];
 }
