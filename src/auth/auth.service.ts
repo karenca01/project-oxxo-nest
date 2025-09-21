@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import * as jwt  from 'jsonwebtoken';
+import { JWT_KEY, EXPIRES_IN } from './constants/jwt.constants';
 
 @Injectable()
 export class AuthService {
@@ -29,9 +30,12 @@ export class AuthService {
       throw new Error('Usuario no encontrado');
     }
 
-    const match = await bcrypt.compare(userLoginDto.userPassword, user.userPassword,);
+    const match = await bcrypt.compare(userLoginDto.userPassword, user.userPassword);
     if (!match) throw new UnauthorizedException('Datos incorrectos');
-    const token = jwt.sign(JSON.stringify(user), "SECRET KEY");
-    return token
+
+    const payload = { id: user.userId, email: user.userEmail };
+    const token = jwt.sign(payload, JWT_KEY, { expiresIn: EXPIRES_IN });
+
+    return token;
   }
 }
