@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JWT_KEY, EXPIRES_IN } from './constants/jwt.constants';
 import { LoginUserDto } from './dto/login-user.dto';
 import { from } from 'rxjs';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -45,5 +46,16 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
 
     return token;
+  }
+
+  async updateUser(userEmail: string, updateUserDto: UpdateUserDto) {
+    const newUserData = await this.userRepository.preload({
+      userEmail,
+      ...updateUserDto
+    })
+    if(!newUserData) throw new NotFoundException('Usuario no encontrado');
+
+    this.userRepository.save(newUserData)
+    return newUserData;
   }
 }

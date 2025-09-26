@@ -24,7 +24,7 @@ export class EmployeesService {
   }
 
   findOne(id: string) {
-    const employee = this.employeeRepository.findOneBy({id: id});
+    const employee = this.employeeRepository.findOneBy({employeeId: id});
     
     if(!employee) throw new NotFoundException();
     return employee;
@@ -32,7 +32,7 @@ export class EmployeesService {
 
   async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
     const employeeToUpdate = await this.employeeRepository.preload({
-      id: id,
+      employeeId: id,
       ...updateEmployeeDto
     })
 
@@ -42,7 +42,7 @@ export class EmployeesService {
   }
 
   remove(id: string) {
-    this.employeeRepository.delete({ id: id });
+    this.employeeRepository.delete({ employeeId: id });
     
     return {
       message: `El empleado con id ${id} fue eliminado`

@@ -5,10 +5,15 @@ import { Product } from '../../products/entities/product.entity';
 export class Provider {
     @PrimaryGeneratedColumn('uuid')
     providerId: string;
+
     @Column('text')
     providerName: string;
-    @Column('text')
+
+    @Column('text', {
+        unique: true,
+    })
     providerEmail: string;
+
     @Column({
         type: 'text',
         nullable: true,
