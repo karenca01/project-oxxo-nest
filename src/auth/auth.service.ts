@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JWT_KEY, EXPIRES_IN } from './constants/jwt.constants';
 import { LoginUserDto } from './dto/login-user.dto';
+import { from } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -37,7 +38,8 @@ export class AuthService {
 
     const payload = {
       user: user.userEmail,
-      password: user.userPassword
+      password: user.userPassword,
+      userRoles: user.userRoles
     };
 
     const token = this.jwtService.sign(payload);
