@@ -5,15 +5,17 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
-import * as jwt  from 'jsonwebtoken';
+import { JwtService } from '@nestjs/jwt';
 import { JWT_KEY, EXPIRES_IN } from './constants/jwt.constants';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class AuthService {
 
   constructor(
     @InjectRepository(User)
-    private userRepository: Repository<User>
+    private userRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
 
   registerUser(createUserDto: CreateUserDto) {
@@ -21,20 +23,24 @@ export class AuthService {
     return this.userRepository.save(createUserDto);
   }
   
-  async loginUser(userLoginDto: CreateUserDto) {
+  async loginUser(loginUserDto: LoginUserDto) {
     const user = await this.userRepository.findOne({
-      where: { userEmail: userLoginDto.userEmail },
+      where: { userEmail: loginUserDto.userEmail },
     });
 
     if (!user) {
       throw new Error('Usuario no encontrado');
     }
 
-    const match = await bcrypt.compare(userLoginDto.userPassword, user.userPassword);
+    const match = await bcrypt.compare(loginUserDto.userPassword, user.userPassword);
     if (!match) throw new UnauthorizedException('Datos incorrectos');
 
-    const payload = { id: user.userId, email: user.userEmail };
-    const token = jwt.sign(payload, JWT_KEY, { expiresIn: EXPIRES_IN });
+    const payload = {
+      user: user.userEmail,
+      password: user.userPassword
+    };
+
+    const token = this.jwtService.sign(payload);
 
     return token;
   }
