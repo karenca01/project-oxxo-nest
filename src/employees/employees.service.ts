@@ -13,9 +13,10 @@ export class EmployeesService {
     @InjectRepository(Employee)
     private  employeeRepository: Repository<Employee>
   ){}
-  
+
   create(createEmployeeDto: CreateEmployeeDto) {
     const employee = this.employeeRepository.save(createEmployeeDto)
+    
     return employee;
   }
 
@@ -28,6 +29,14 @@ export class EmployeesService {
     
     if(!employee) throw new NotFoundException();
     return employee;
+  }
+
+  findByLocation(id: number) {
+    return this.employeeRepository.findBy({
+      location: {
+        locationId: id
+      }
+    })
   }
 
   async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {

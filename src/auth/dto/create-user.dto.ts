@@ -10,5 +10,6 @@ export class CreateUserDto {
     userPassword: string;
 
     @IsIn(["Employee", "Manager", "Admin"])
+    @IsOptional()
     userRoles: string[];
 }

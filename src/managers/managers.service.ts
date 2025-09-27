@@ -14,10 +14,12 @@ export class ManagersService {
   ) {}
 
   create(createManagerDto: CreateManagerDto) {
+    console.log('Creado');
     return this.managerRepository.save(createManagerDto);
   }
 
   findAll() {
+    console.log('Buscado');
     return this.managerRepository.find();
   }
 
@@ -29,6 +31,7 @@ export class ManagersService {
   }
 
   async update(id: string, updateManagerDto: UpdateManagerDto) {
+    console.log('Cambiado');
     const managerToUpdate = await this.managerRepository.preload({
       managerId: id,
       ...updateManagerDto

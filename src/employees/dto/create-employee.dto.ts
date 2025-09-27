@@ -1,4 +1,5 @@
-import { IsEmail, IsString, MaxLength } from "class-validator";
+import { IsEmail, IsObject, IsOptional, IsString, MaxLength } from "class-validator";
+import { Location } from "src/locations/entities/location.entity";
 
 export class CreateEmployeeDto {
     @IsString()
@@ -16,4 +17,8 @@ export class CreateEmployeeDto {
     @IsString()
     @IsEmail()
     employeeEmail: string;
+
+    @IsObject()
+    @IsOptional()
+    location: Location
 }
