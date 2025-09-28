@@ -5,6 +5,7 @@ import { UpdateManagerDto } from './dto/update-manager.dto';
 import { ROLES } from '../auth/constants/roles.constants';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { ApiAuth } from 'src/auth/decorators/api.decorator';
+import { ApiResponse } from '@nestjs/swagger';
 
 
 @ApiAuth()
@@ -13,6 +14,16 @@ export class ManagersController {
   constructor(private readonly managersService: ManagersService) {}
 
   @Auth()
+  @ApiResponse({
+    status: 201,
+    example:{
+      managerId: "UUID",
+      managerFullName: "Karen Cervantes",
+      managerSalary: 1000,
+      managerEmail: "karen@email.com",
+      managerPhonenumber: "4427544416"
+    }
+  })
   @Post()
   create(@Body() createManagerDto: CreateManagerDto) {
     return this.managersService.create(createManagerDto);

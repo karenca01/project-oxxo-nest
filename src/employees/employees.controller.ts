@@ -56,6 +56,23 @@ export class EmployeesController {
   }
 
   @Auth(ROLES.EMPLOYEE)
+  @ApiResponse({
+    status: 201,
+    example: {
+      employeeId: "UUID",
+      employeeName: "Cynthia",
+      employeeLastname: "Aguilar",
+      employeePhonenumber: "4422521870",
+      employeeEmail: "cynthia@email.com",
+      employeePhoto: "null",
+      location: {
+        locationId: 1,
+        locationName: "Oxxo Juriquilla",
+        locationAddress: "Calle 123, 123 Barrio, Juriquilla",
+        locationLatLng: [-12.1234, 12.1234]
+      }
+    } as Employee
+  })
   @Patch(':id')
   update(@Param('id', new ParseUUIDPipe({version: '4'})) id: string, @Body() updateEmployeeDto: UpdateEmployeeDto) {
     return this.employeesService.update(id, updateEmployeeDto);

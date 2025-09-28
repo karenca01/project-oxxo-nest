@@ -5,6 +5,8 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { ROLES } from 'src/auth/constants/roles.constants';
 import { ApiAuth } from 'src/auth/decorators/api.decorator';
+import { ApiResponse } from '@nestjs/swagger';
+import { Product } from './entities/product.entity';
 
 
 @ApiAuth()
@@ -13,6 +15,15 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Auth(ROLES.EMPLOYEE, ROLES.MANAGER)
+  @ApiResponse({
+    status: 201,
+    example:{
+      productId: "UUID",
+      productName: "Oxxo",
+      price: 1000,
+      countSeal: 10
+    }
+  })
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
@@ -37,6 +48,21 @@ export class ProductsController {
   }
 
   @Auth(ROLES.EMPLOYEE, ROLES.MANAGER)
+  @ApiResponse({
+    status: 201,
+    example: {
+      productId: "UUID",
+      productName: "Oxxo",
+      price: 1000,
+      countSeal: 10,
+      provider: {
+        providerId: "UUID",
+        providerName: "Coca Cola",
+        providerEmail: "coca@email.com",
+        providerPhoneNumber: "4421382759"
+      }
+    } as Product
+  })
   @Patch(':id')
   update(@Param('id', new ParseUUIDPipe({version: '4'})) id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.update(id, updateProductDto);

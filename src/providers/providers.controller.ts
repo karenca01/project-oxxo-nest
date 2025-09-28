@@ -7,6 +7,7 @@ import { User } from 'src/auth/entities/user.entity';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { ROLES } from 'src/auth/constants/roles.constants';
 import { ApiAuth } from 'src/auth/decorators/api.decorator';
+import { ApiResponse } from '@nestjs/swagger';
 
 
 @ApiAuth()
@@ -15,6 +16,15 @@ export class ProvidersController {
   constructor(private readonly providersService: ProvidersService) {}
 
   @Auth(ROLES.MANAGER)
+  @ApiResponse({
+    status: 201,
+    example: {
+      providerId:"UUID",
+      providerName: "Coca Cola",
+      providerEmail: "coca@email.com",
+      providerPhoneNumber: "4421382759"
+    }
+  })
   @Post()
   create(@Body() createProviderDto: CreateProviderDto) {
     return this.providersService.create(createProviderDto);
