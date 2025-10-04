@@ -31,7 +31,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error('Usuario no encontrado');
+      throw new UnauthorizedException('Usuario no encontrado');
     }
 
     const match = await bcrypt.compare(loginUserDto.userPassword, user.userPassword);
