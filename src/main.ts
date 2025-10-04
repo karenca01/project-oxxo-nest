@@ -4,7 +4,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule,{
+    cors:{
+      origin: process.env.allowedOrigin,
+    }
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Oxoo API')
@@ -21,6 +25,6 @@ async function bootstrap() {
     whitelist: true,
     forbidNonWhitelisted: true
   }));
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 4000);
 }
 bootstrap();
