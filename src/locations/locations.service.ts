@@ -20,8 +20,8 @@ export class LocationsService {
     return this.locationRepository.find();
   }
 
-  findOne(id: number) {
-    const location = this.locationRepository.findOneBy({
+  async findOne(id: number) {
+    const location = await this.locationRepository.findOneBy({
       locationId: id
     });
 

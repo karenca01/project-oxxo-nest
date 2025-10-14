@@ -24,8 +24,8 @@ export class EmployeesService {
     return this.employeeRepository.find();
   }
 
-  findOne(id: string) {
-    const employee = this.employeeRepository.findOneBy({employeeId: id});
+  async findOne(id: string) {
+    const employee = await this.employeeRepository.findOneBy({employeeId: id});
     
     if(!employee) throw new NotFoundException();
     return employee;
