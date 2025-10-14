@@ -10,5 +10,6 @@ import { Manager } from './entities/manager.entity';
   ],
   controllers: [ManagersController],
   providers: [ManagersService],
+  exports: [ManagersModule]
 })
 export class ManagersModule {}

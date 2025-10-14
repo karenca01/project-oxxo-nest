@@ -5,12 +5,15 @@ import { Location } from './entities/location.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
+import { Manager } from 'src/managers/entities/manager.entity';
 
 @Injectable()
 export class LocationsService {
   constructor(
     @InjectRepository(Location)
-    private  locationRepository: Repository<Location>
+    private  locationRepository: Repository<Location>,
+    @InjectRepository(Manager)
+    private managerRepository: Repository<Manager>
   ) {}
   create(createLocationDto: CreateLocationDto) {
     return this.locationRepository.save(createLocationDto);
@@ -30,15 +33,38 @@ export class LocationsService {
   }
 
   async update(id: number, updateLocationDto: UpdateLocationDto) {
-    const locationToUpdate = await this.locationRepository.preload({
-      locationId: id,
-      ...updateLocationDto
-    })
+    this.managerRepository
+      .createQueryBuilder()
+      .update()
+      .set({ location : null})
+      .where("locationId = :id",{
+        id,
+      }).execute();
 
-    if(!locationToUpdate) throw new NotFoundException();
-    this.locationRepository.save(locationToUpdate);
-    
-    return locationToUpdate;
+    const location = await this.locationRepository.preload({
+      locationId: id,
+      ...updateLocationDto,
+    });
+
+    if (!location) {
+      throw new NotFoundException(`Location with ID ${id} not found`);
+    }
+
+    const savedLocation = await this.locationRepository.save(location);
+
+    if (updateLocationDto.manager) {
+      const updatedManager = await this.managerRepository.preload({
+        managerId: updateLocationDto.manager,
+        location: savedLocation,
+      });
+
+      if (!updatedManager) {
+        throw new NotFoundException(`Manager with ID ${updateLocationDto.manager} not found`);
+      }
+
+      await this.managerRepository.save(updatedManager);
+    }
+    return savedLocation;
   }
 
   remove(id: number) {
