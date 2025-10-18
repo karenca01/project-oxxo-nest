@@ -18,11 +18,20 @@ export class ManagersService {
   }
 
   findAll() {
-    return this.managerRepository.find();
+    return this.managerRepository.find({
+      relations:{
+        location: true,
+      }
+    });
   }
 
   findOne(id: string) {
-    const manager = this.managerRepository.findOneBy({ managerId: id });
+    const manager = this.managerRepository.findOne({
+      where: {managerId: id},
+      relations: {
+        location: true,
+      }
+    });
     
     if(!manager) throw new NotFoundException();
     return manager;
