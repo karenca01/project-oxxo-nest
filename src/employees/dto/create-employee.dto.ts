@@ -20,6 +20,10 @@ export class CreateEmployeeDto {
 
     @ApiProperty()
     @IsString()
+    employeePhoto: string;
+
+    @ApiProperty()
+    @IsString()
     @IsEmail()
     employeeEmail: string;
 

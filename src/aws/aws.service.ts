@@ -22,6 +22,8 @@ export class AwsService {
 
     async uploadFile(file: Express.Multer.File) {
         const key = file.originalname;
+        const url = `https://nest-oxxo-testt.s3.us-east-2.amazonaws.com/${key}`
+        //https://nest-oxxo-testt.s3.us-east-2.amazonaws.com/employee.jpg
         const bucket = "nest-oxxo-testt"
         try{
             const command = new PutObjectCommand({
@@ -29,9 +31,9 @@ export class AwsService {
             Body: file.buffer,
             Bucket: bucket
         })
-        const response = await this.s3.send(command);
+        await this.s3.send(command);
+        return url;
         
-        return response;
         } catch (error) {
             console.error("Error:", error);
         }
