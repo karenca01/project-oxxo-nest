@@ -38,7 +38,7 @@ export class ProvidersController {
   }
 
   @Auth(ROLES.EMPLOYEE, ROLES.MANAGER)
-  @Get(':name')
+  @Get('name/:name')
   findByName(@Param('name') name: string) {
     return this.providersService.findByName(name);
   }
@@ -49,13 +49,13 @@ export class ProvidersController {
     return this.providersService.findOne(id);
   }
 
-  @Auth(ROLES.MANAGER)
+  // @Auth(ROLES.MANAGER)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProviderDto: UpdateProviderDto) {
     return this.providersService.update(id, updateProviderDto);
   }
 
-  @Auth(ROLES.MANAGER)
+  // @Auth(ROLES.MANAGER)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.providersService.remove(id);

@@ -38,7 +38,6 @@ export class ManagersService {
   }
 
   async update(id: string, updateManagerDto: UpdateManagerDto) {
-    console.log('Cambiado');
     const managerToUpdate = await this.managerRepository.preload({
       managerId: id,
       ...updateManagerDto
