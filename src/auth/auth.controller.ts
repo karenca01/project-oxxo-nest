@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, BadRequestException, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -10,25 +10,19 @@ import { TOKEN_NAME } from './constants/jwt.constants';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  @Post('register/employee/[id]')
-  registerEmployee(@Body() createUserDto: CreateUserDto, @Param ('id') id: string) {
-    if(
-      createUserDto.userRoles.includes("Admin") ||
-      createUserDto.userRoles.includes("Manager")
-    )
-      throw new BadRequestException("El usuario no puede ser administrador o gerente");
-    return this.authService.registerEmployee(id, createUserDto);
-  }
-
-  @Post('register/manager')
-  registerManager(@Body() createUserDto: CreateUserDto, @Param ('id') id: string) {
-    if(
-      createUserDto.userRoles.includes("Admin") ||
-      createUserDto.userRoles.includes("Employee")
-    )
-      throw new BadRequestException("El usuario no puede ser administrador o gerente");
-    return this.authService.registerManager(id, createUserDto);
+  
+  @Post('register/:id')
+  registerManager(
+    @Query("role") role:string,
+    @Body() createUserDto: CreateUserDto,
+    @Param ('id') id: string
+  ) {
+    if(role === "manager"){
+      return this.authService.registerManager(id, createUserDto);
+    }else if(role === "employee"){
+      return this.authService.registerEmployee(id, createUserDto);
+    }
+    throw new BadRequestException("El usuario no puede ser administrador o gerente");
   }
 
   @Post('login')

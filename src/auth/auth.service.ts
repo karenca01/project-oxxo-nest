@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -24,6 +24,11 @@ export class AuthService {
   ) {}
 
   async registerEmployee(id: string, createUserDto: CreateUserDto) {
+    const roles = createUserDto.userRoles;
+    if(roles.includes("Admin") || roles.includes("Manager")){
+      throw new BadRequestException("El usuario no puede ser administrador o gerente");
+    }
+
     createUserDto.userPassword = bcrypt.hashSync(createUserDto.userPassword, 5);
     const user = await this.userRepository.save(createUserDto);
     const employee = await this.employeeRepository.preload({
@@ -39,6 +44,11 @@ export class AuthService {
   }
 
   async registerManager(id: string, createUserDto: CreateUserDto) {
+    const roles = createUserDto.userRoles;
+    if(roles.includes("Admin") || roles.includes("Employee")){
+      throw new BadRequestException("El usuario no puede ser administrador o empleado");
+    }
+
     createUserDto.userPassword = bcrypt.hashSync(createUserDto.userPassword, 5);
     const user = await this.userRepository.save(createUserDto);
     const manager = await this.managerRepository.preload({
